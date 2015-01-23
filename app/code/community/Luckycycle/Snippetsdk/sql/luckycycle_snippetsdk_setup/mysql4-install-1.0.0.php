@@ -63,11 +63,11 @@ $installer->run("
       `hash` varchar(255),
       `banner_url` varchar(255) ,
       `type` varchar(255) ,
-      `id_customer` int(11),
-      `id_order` int(11),
+      `id_customer` varchar(255),
+      `id_order` varchar(255),
       `create_at` timestamp NOT NULL default CURRENT_TIMESTAMP,
       `operation_id` varchar(255),
-      `total_played` int(11),
+      `total_played` float,
       PRIMARY KEY  (`id_poke`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ");

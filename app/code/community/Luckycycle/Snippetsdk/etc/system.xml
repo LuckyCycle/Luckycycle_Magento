@@ -7,7 +7,7 @@
     </tabs>
     <sections>
         <snippetsdk translate="label" module="snippetsdk">
-            <label>API Snippet</label>
+            <label>Luckycycle API integration</label>
             <tab>luckycyclesdk</tab>
             <frontend_type>text</frontend_type>
             <sort_order>1000</sort_order>
@@ -16,7 +16,7 @@
             <show_in_store>1</show_in_store>
             <groups>
                 <params translate="label">
-                    <label>API Snippet Setting</label>
+                    <label>Luckycycle Setting</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>12</sort_order>
                     <show_in_default>1</show_in_default>
@@ -33,7 +33,7 @@
                             <show_in_store>1</show_in_store>
                         </enabled>
                         <api_id>
-                            <label translate="label">Api Id</label>
+                            <label translate="label">API key</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>2</sort_order>
                             <show_in_default>1</show_in_default>
@@ -48,27 +48,27 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </operation_id>
-                        <!--<use_banner_image>-->
-                            <!--<label translate="label">Use banner image</label>-->
-                            <!--<frontend_type>select</frontend_type>-->
-                            <!--<sort_order>4</sort_order>-->
-                            <!--<source_model>adminhtml/system_config_source_yesno</source_model>-->
-                            <!--<show_in_default>1</show_in_default>-->
-                            <!--<show_in_website>1</show_in_website>-->
-                            <!--<show_in_store>1</show_in_store>-->
-                        <!--</use_banner_image>-->
+                        <use_iframe>
+                            <label translate="label">Method</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>4</sort_order>
+                            <source_model>Luckycycle_Snippetsdk_Model_Usemode</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_iframe>
                         <iframe_width>
-                            <label translate="label">Specify iframe width pixels </label>
+                            <label translate="label">Width of Banner/ Iframe</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>5</sort_order>
+                            <sort_order>7</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </iframe_width>
                         <iframe_height>
-                            <label translate="label">Specify iframe height in pixels  </label>
+                            <label translate="label">Height of Banner/ Iframe</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>6</sort_order>
+                            <sort_order>8</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -82,21 +82,37 @@
                             <!--<show_in_store>1</show_in_store>-->
                         <!--</iframe_tagcss>-->
                         <upload_defaultbanner translate="label">
-                            <label>Upload Default Banner</label>
-                            <comment><![CDATA[Allow image type: jpg,png,jpeg,gif. It use if banner_url from server is null]]></comment>
+                            <label>Upload Banner</label>
+                            <comment><![CDATA[Allow image type: jpg,png,jpeg,gif. <br/>In case does not setup banner on Luckycycle]]></comment>
                             <frontend_type>image</frontend_type>
                             <backend_model>snippetsdk/bannerdefault</backend_model>
                             <upload_dir config="system/filesystem/media" scope_info="1">upload</upload_dir>
                             <base_url type="media" scope_info="1">upload</base_url>
-                            <sort_order>8</sort_order>
+                            <sort_order>9</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </upload_defaultbanner>
+                        <before_information>
+                            <label translate="label">Before Banner/ Iframe:</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </before_information>
+                        <after_information>
+                            <label translate="label">After Banner/ Iframe:</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </after_information>
                         <payment_method_luckycyclesdk>
-                            <label translate="label">Select payment method</label>
+                            <label translate="label">Selection payment</label>
                             <frontend_type>multiselect</frontend_type>
-                            <sort_order>9</sort_order>
+                            <sort_order>12</sort_order>
                             <source_model>Luckycycle_Snippetsdk_Model_Paymentmethod</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

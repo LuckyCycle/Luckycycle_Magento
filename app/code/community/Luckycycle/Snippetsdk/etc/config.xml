@@ -59,6 +59,7 @@
         <snippetsdk>
             <params>
                 <enabled>0</enabled>
+                <use_iframe>1</use_iframe>
             </params>
         </snippetsdk>
     </default>

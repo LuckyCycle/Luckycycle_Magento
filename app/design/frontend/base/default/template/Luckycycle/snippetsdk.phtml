@@ -1,19 +1,16 @@
 <?php
 
 $banner_default = Mage::getStoreConfig('snippetsdk/params/upload_defaultbanner');
-$iframe_width   = Mage::getStoreConfig('snippetsdk/params/iframe_width');
-if ($iframe_width == null) {
-    $iframe_width = 200;
-}
+$before_information = Mage::getStoreConfig('snippetsdk/params/before_information');
+$after_information = Mage::getStoreConfig('snippetsdk/params/after_information');
+$iframe_width = Mage::getStoreConfig('snippetsdk/params/iframe_width');
 $iframe_height = Mage::getStoreConfig('snippetsdk/params/iframe_height');
-if ($iframe_height == null) {
-    $iframe_height = 200;
-}
+
 require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 $apiKey = Mage::getStoreConfig('snippetsdk/params/api_id');
 $operationKey = Mage::getStoreConfig('snippetsdk/params/operation_id');
-$useImage = Mage::getStoreConfig('snippetsdk/params/use_banner_image');
+$useImage = Mage::getStoreConfig('snippetsdk/params/use_iframe');
 $orderId = $this->getOrderId();
 $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
@@ -48,7 +45,7 @@ if ($enabledSnippet) {
         }
         $currencySymbol = Mage::app()->getLocale()->currency($currencyCode)->getSymbol();
         $language = Mage::getStoreConfig('general/locale/code', Mage::app()->getStore()->getId());
-        $language = explode('_',$language);
+        $language = explode('_', $language);
         $language = $language[0];
         //get all product in order
 
@@ -72,7 +69,7 @@ if ($enabledSnippet) {
                 $topCategory = Mage::getResourceModel('catalog/category_collection')
                     ->addIdFilter($order_item->getProduct()->getCategoryIds())
                     ->setOrder('level', 'ASC')
-                    ->setPage(1,1)
+                    ->setPage(1, 1)
                     ->getFirstItem();
                 $topCategoryId = $topCategory->getId();
                 $item['category_id'] = $topCategoryId;
@@ -93,7 +90,7 @@ if ($enabledSnippet) {
 
                 $item['reference'] = 'reference';
                 //$item['reference'] = $value['reference'];
-                array_push($the_cart,$item);
+                array_push($the_cart, $item);
             }
         }
 
@@ -112,65 +109,99 @@ if ($enabledSnippet) {
             'firstname' => (string)$firstName,
             'lastname' => (string)$lastName,
             'email' => (string)$emailCustomer,
-            'cart'=>$the_cart
+            'cart' => $the_cart
         );
         //end sdk
-
+        //Mage::log($pokedata);
         try {
             $poke = $req->poke($pokedata);
             //Mage::log($poke);
-            if ($poke && $poke['can_play']== true) {
-                $model_luckycycle = Mage::getModel('snippetsdk/luckycycle')->getCollection()
-                    ->addFieldToFilter('hash',$poke['computed_hash']);
-                $flagCheckHashExits = count($model_luckycycle);
-                if ($flagCheckHashExits == 0) {
-                    $insertLuckycycle = Mage::getModel('snippetsdk/luckycycle');
-                    $insertLuckycycle->setHash($poke['computed_hash']);
-                    $insertLuckycycle->setBannerUrl($poke['banner_url']);
-                    $insertLuckycycle->setIdOrder($orderId);
-                    $insertLuckycycle->setOperationId($operationKey);
-                    $insertLuckycycle->setType('basket');
-                    $insertLuckycycle->setIdCustomer($customerId);
-                    $insertLuckycycle->setCreateAt(date('Y-m-d H:i:s'));
-                    $insertLuckycycle->setTotalPlayed($real_paid);
-                    $insertLuckycycle->save();
-                    ?>
-                    <div id="content-api-luckycycle">
+        if ($poke && $poke['can_play'] == true) {
+            $model_luckycycle = Mage::getModel('snippetsdk/luckycycle')->getCollection()
+                ->addFieldToFilter('hash', $poke['computed_hash']);
+            $flagCheckHashExits = count($model_luckycycle);
+            if ($flagCheckHashExits == 0) {
+                $insertLuckycycle = Mage::getModel('snippetsdk/luckycycle');
+                $insertLuckycycle->setHash($poke['computed_hash']);
+                $insertLuckycycle->setBannerUrl($poke['banner_url']);
+                $insertLuckycycle->setIdOrder($orderId);
+                $insertLuckycycle->setOperationId($operationKey);
+                $insertLuckycycle->setType('basket');
+                $insertLuckycycle->setIdCustomer($customerId);
+                $insertLuckycycle->setCreateAt(date('Y-m-d H:i:s'));
+                $insertLuckycycle->setTotalPlayed($real_paid);
+                $insertLuckycycle->save();
+                ?>
+                <div id="content-api-luckycycle">
                     <?php
-                    if ($poke['banner_url'] == null) {
-                        if ($banner_default != null) {
+                    if (isset($before_information)) {
+                        echo "<div>" . $before_information . "</div>";
+                    }
+                    if ($useImage) {
+                        if ($poke['banner_url'] == null) {
+                            if ($banner_default != null) {
+                                ?>
+                                <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
+                                   id="lc_banner_url">
+                                    <img
+                                        src="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/media' . '/upload/' . $banner_default; ?>"
+                                        <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
+                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
+                                        style="margin: auto; max-width: 98%"/>
+                                </a>
+                            <?php
+                            } else {
+                                $urlNoImage = Mage::helper('catalog/image')->init(Mage::getModel('catalog/product'), 'image');
+                                ?>
+                                <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
+                                   id="lc_banner_url">
+                                    <img
+                                        src="<?php echo $urlNoImage ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
+                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
+                                        style="margin: auto; max-width: 98%"/>
+                                </a>
+                            <?php
+                            }
+                        } else {
                             ?>
-                            <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                                <img src="<?php echo 'http://'.$_SERVER['HTTP_HOST'].'/media'.'/upload/'.$banner_default; ?>"
-                                     width="<?php echo $iframe_width.'px' ?>" height="<?php echo $iframe_height.'px' ?>" style="margin: auto;">
-                            </a>
-                        <?php } else {
-                            ?>
-                            <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                                <img src="http://www.guestcentric.com/wp-content/uploads/2012/02/url.jpg" width="<?php echo $iframe_width.'px' ?>"
-                                     height="<?php echo $iframe_height.'px' ?>"  style="margin: auto;">
+                            <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
+                               id="lc_banner_url">
+                                <img
+                                    src="<?php echo $poke['banner_url'] ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
+                                    <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
+                                    style="margin: auto; max-width: 98%"/>
                             </a>
                         <?php
                         }
                     } else {
                         ?>
-                        <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                            <img src="<?php echo $poke['banner_url'] ?>" width="<?php echo $iframe_width.'px' ?>"
-                                 height="<?php echo $iframe_height.'px' ?>"  style="margin: auto;">
-                        </a>
+                        <div style="text-align: center">
+                            <iframe frameborder="0"
+                                    src="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
+                                    target="_blank"
+                                    align="center"
+                                    scrolling="no"
+                                    style="margin: auto; max-width: 98%"
+                                <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
+                                <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
+                                    id="luckycycle_iframe"></iframe>
+                        </div>
                     <?php
                     }
+                    if (isset($after_information)) {
+                        echo "<div>" . $after_information . "</div>";
+                    }
                     ?>
-                    </div>
-                    <script type="text/javascript">
-                        var luckyCycleHtml = document.getElementById('content-api-luckycycle')
-                        var luckyCycleApi = document.getElementById('api-frame-luckycycle')
-                        if (luckyCycleApi) {
-                            luckyCycleApi.innerHTML = luckyCycleHtml.innerHTML;
-                            luckyCycleHtml.remove();
-                        }
-                    </script>
-                    <?php
+                </div>
+                <script type="text/javascript">
+                    var luckyCycleHtml = document.getElementById('content-api-luckycycle')
+                    var luckyCycleApi = document.getElementById('api-frame-luckycycle')
+                    if (luckyCycleApi) {
+                        luckyCycleApi.innerHTML = luckyCycleHtml.innerHTML;
+                        luckyCycleHtml.remove();
+                    }
+                </script>
+                <?php
                 } else {
                     Mage::log('Poke added in DB');
                 }
