@@ -1,0 +1,9 @@
+<?php 
+$iframe_width = Mage::getStoreConfig('snippetsdk/params/iframe_width');
+$iframe_height = Mage::getStoreConfig('snippetsdk/params/iframe_height');
+$operationKey = Mage::getStoreConfig('snippetsdk/params/operation_id');
+$locale = strtolower(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2));
+
+?>
+
+<iframe src="http://www.luckycycle.com/s/<?php echo $operationKey; ?>/<?php echo $locale; ?>?stop=1" width="100%" height="2000" frameborder="0"></iframe>

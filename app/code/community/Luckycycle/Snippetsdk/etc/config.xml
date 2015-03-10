@@ -5,6 +5,15 @@
         </Luckycycle_Snippetsdk>
     </modules>
     <frontend>
+        <routers>
+          <snippetsdk>
+            <use>standard</use>
+              <args>
+                <module>Luckycycle_Snippetsdk</module>
+                <frontName>luckycycle</frontName>
+              </args>
+          </snippetsdk>
+        </routers>
         <layout>
             <updates>
                 <snippetsdk>
@@ -54,6 +63,11 @@
                 </connection>
             </luckycycle_snippetsdk_read>
         </resources>
+        <blocks>
+          <snippetsdk>
+            <class>Luckycycle_Snippetsdk_Block</class>
+          </snippetsdk>
+        </blocks>
     </global>
     <default>
         <snippetsdk>
