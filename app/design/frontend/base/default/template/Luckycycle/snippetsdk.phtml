@@ -8,8 +8,8 @@ $iframe_height = Mage::getStoreConfig('snippetsdk/params/iframe_height');
 
 require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
-$apiKey = Mage::getStoreConfig('snippetsdk/params/api_id');
-$operationKey = Mage::getStoreConfig('snippetsdk/params/operation_id');
+$apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
+$operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $useImage = Mage::getStoreConfig('snippetsdk/params/use_iframe');
 $orderId = $this->getOrderId();
 $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
