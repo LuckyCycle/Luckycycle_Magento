@@ -16,9 +16,13 @@ $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
 $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
 $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+$orderDetails = $order->getData();
+$couponCode = $orderDetails['coupon_code'];
+if($couponCode != null) {
+    echo 'Luckycycle campaign disabled because a coupon code is used ('.$couponCode.')';
+}
 
-
-if ($enabledSnippet) {
+if ($enabledSnippet && $couponCode == null) {
     if ($operationKey && $apiKey && in_array($paymentMethodCode, $paymentMethodLuckyCycle)) {
         //first need customer_id
 
@@ -54,6 +58,9 @@ if ($enabledSnippet) {
         $real_paid = $quote['grand_total'];
         $the_cart = array(); // container product
 
+        // Code added by Nicolas to enable discount filtering
+        $discount = 0;
+
 
         foreach ($quote->getAllItems() as $order_item) {
 
@@ -64,6 +71,7 @@ if ($enabledSnippet) {
                 $item['price'] = $order_item->getPrice();
                 $item['quantity'] = $order_item->getQty();
                 $item['product_id'] = $order_item->getProduct()->getId();
+                $discount += $item->getBaseDiscountAmount();
 
                 //get top categoryId
                 $topCategory = Mage::getResourceModel('catalog/category_collection')
@@ -109,6 +117,7 @@ if ($enabledSnippet) {
             'firstname' => (string)$firstName,
             'lastname' => (string)$lastName,
             'email' => (string)$emailCustomer,
+            'discount' => (string)$discount,
             'cart' => $the_cart
         );
         //end sdk
