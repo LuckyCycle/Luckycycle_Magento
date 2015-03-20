@@ -71,7 +71,7 @@ if ($enabledSnippet && $couponCode == null) {
                 $item['price'] = $order_item->getPrice();
                 $item['quantity'] = $order_item->getQty();
                 $item['product_id'] = $order_item->getProduct()->getId();
-                $discount += $item->getBaseDiscountAmount();
+                $discount += $order_item->getBaseDiscountAmount();
 
                 //get top categoryId
                 $topCategory = Mage::getResourceModel('catalog/category_collection')
