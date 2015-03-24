@@ -163,7 +163,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                             if ($poke['banner_url'] == null) {
                                 if ($banner_default != null) {
                                     ?>
-                                    <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
+                                    <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
                                         <img src="<?php echo 'http://'.$_SERVER['HTTP_HOST'].'/media'.'/upload/'.$banner_default; ?>"
                                             <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
                                             <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
@@ -171,7 +171,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                                 <?php } else {
                                     $urlNoImage = Mage::helper('catalog/image')->init(Mage::getModel('catalog/product'),'image');
                                     ?>
-                                    <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
+                                    <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
                                         <img src="<?php echo $urlNoImage?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
                                             <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
                                     </a>
@@ -179,7 +179,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                                 }
                             } else {
                                 ?>
-                                <a href="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
+                                <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
                                     <img src="<?php echo $poke['banner_url'] ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
                                         <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
                                 </a>
@@ -189,7 +189,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                             ?>
                             <div style="text-align: center">
                                 <iframe frameborder="0"
-                                        src="http://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
+                                        src="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
                                         target="_blank"
                                         align="center"
                                         scrolling="no"
