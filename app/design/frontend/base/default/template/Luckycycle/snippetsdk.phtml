@@ -185,6 +185,9 @@ if ($enabledSnippet && $couponCode == null) {
                     } else {
                         ?>
                         <div style="text-align: center">
+                        <div id="loadImg" style="display:table-cell;width:950px;height:633px;background:#fff;text-align:center;vertical-align:middle;">
+                            <img src="http://stuff.lck.io/assets/loading.gif" style="position:absolute;z-index:999;">
+                        </div>
                             <iframe frameborder="0"
                                     src="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
                                     target="_blank"
@@ -193,7 +196,7 @@ if ($enabledSnippet && $couponCode == null) {
                                     style="margin: auto; max-width: 98%"
                                 <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
                                 <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
-                                    id="luckycycle_iframe"></iframe>
+                                    id="luckycycle_iframe" onload="document.getElementById('loadImg').style.display='none';"></iframe>
                         </div>
                     <?php
                     }
