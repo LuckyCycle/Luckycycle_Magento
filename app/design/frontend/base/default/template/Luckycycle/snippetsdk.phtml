@@ -17,6 +17,8 @@ $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
 $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
 $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 $orderDetails = $order->getData();
+$storeCode = Mage::app()->getStore()->getCode();
+$userIP = Mage::helper('core/http')->getRemoteAddr();
 $couponCode = $orderDetails['coupon_code'];
 if($couponCode != null) {
     echo 'Luckycycle campaign disabled because a coupon code is used ('.$couponCode.')';
@@ -118,6 +120,7 @@ if ($enabledSnippet && $couponCode == null) {
             'lastname' => (string)$lastName,
             'email' => (string)$emailCustomer,
             'discount' => (string)$discount,
+            'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
             'cart' => $the_cart
         );
         //end sdk
