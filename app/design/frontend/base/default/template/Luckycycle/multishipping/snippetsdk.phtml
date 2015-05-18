@@ -78,7 +78,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
 
         foreach ($quote->getAllItems() as $order_item) {
 
-            $price = $order_item->getPrice();
+            $price = $order_item->getPriceInclTax();
             if ($price > 0) {
 
 
