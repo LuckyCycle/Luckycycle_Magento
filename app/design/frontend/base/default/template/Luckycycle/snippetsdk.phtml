@@ -70,7 +70,7 @@ if ($enabledSnippet && $couponCode == null) {
             if ($price > 0) {
 
 
-                $item['price'] = $order_item->getPrice();
+                $item['price'] = $order_item->getPriceInclTax();
                 $item['quantity'] = $order_item->getQty();
                 $item['product_id'] = $order_item->getProduct()->getId();
                 $discount += $order_item->getBaseDiscountAmount();
