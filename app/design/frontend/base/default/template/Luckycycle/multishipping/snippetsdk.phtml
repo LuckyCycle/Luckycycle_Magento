@@ -85,6 +85,8 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                 $item['price'] = $order_item->getPriceInclTax();
                 $item['quantity'] = $order_item->getQty();
                 $item['product_id'] = $order_item->getProduct()->getId();
+                $item['product_name'] = $order_item->getProduct()->getName();
+                $item['product_url'] = $order_item->getProduct()->getProductUrl();
                 $discount += $order_item->getBaseDiscountAmount();
 
                 //get top categoryId
