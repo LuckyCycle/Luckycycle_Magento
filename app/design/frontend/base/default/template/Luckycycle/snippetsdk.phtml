@@ -122,6 +122,7 @@ if ($enabledSnippet && $couponCode == null) {
             'lastname' => (string)$lastName,
             'email' => (string)$emailCustomer,
             'discount' => (string)$discount,
+            'payment_method' => (string)$paymentMethodCode,
             'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
             'cart' => $the_cart
         );
