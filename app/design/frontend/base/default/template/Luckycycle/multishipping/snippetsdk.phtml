@@ -135,6 +135,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
             'email' => (string)$emailCustomer,
             'discount' => (string)$discount,
             'payment_method' => (string)$paymentMethodCode,
+            'shipping_value' => (string)$order->getShippingAmount(),
             'cart'=>$the_cart
         );
         //end sdk

@@ -123,6 +123,7 @@ if ($enabledSnippet && $couponCode == null) {
             'email' => (string)$emailCustomer,
             'discount' => (string)$discount,
             'payment_method' => (string)$paymentMethodCode,
+            'shipping_value' => (string)$order->getShippingAmount(),
             'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
             'cart' => $the_cart
         );
