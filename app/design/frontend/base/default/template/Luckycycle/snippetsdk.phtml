@@ -153,72 +153,19 @@ if ($enabledSnippet && $couponCode == null) {
                     if (isset($before_information)) {
                         echo "<div>" . $before_information . "</div>";
                     }
-                    if ($useImage) {
-                        if ($poke['banner_url'] == null) {
-                            if ($banner_default != null) {
-                                ?>
-                                <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
-                                   id="lc_banner_url">
-                                    <img
-                                        src="<?php echo '//' . $_SERVER['HTTP_HOST'] . '/media' . '/upload/' . $banner_default; ?>"
-                                        <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
-                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
-                                        style="margin: auto; max-width: 98%"/>
-                                </a>
-                            <?php
-                            } else {
-                                $urlNoImage = Mage::helper('catalog/image')->init(Mage::getModel('catalog/product'), 'image');
-                                ?>
-                                <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
-                                   id="lc_banner_url">
-                                    <img
-                                        src="<?php echo $urlNoImage ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
-                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
-                                        style="margin: auto; max-width: 98%"/>
-                                </a>
-                            <?php
-                            }
-                        } else {
-                            ?>
-                            <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank"
-                               id="lc_banner_url">
-                                <img
-                                    src="<?php echo $poke['banner_url'] ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
-                                    <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
-                                    style="margin: auto; max-width: 98%"/>
-                            </a>
-                        <?php
-                        }
-                    } else {
-                        ?>
-                        <div style="text-align: center">
-                        <div id="loadImg" style="display:table-cell;width:950px;height:633px;background:#fff;text-align:center;vertical-align:middle;">
-                            <img src="http://stuff.lck.io/assets/loading.gif" style="position:absolute;z-index:999;">
-                        </div>
-                            <iframe frameborder="0"
-                                    src="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
-                                    target="_blank"
-                                    align="center"
-                                    scrolling="no"
-                                    style="margin: auto; max-width: 98%"
-                                <?php if ($iframe_width) { ?> width="<?php echo $iframe_width . 'px' ?>" <?php } ?>
-                                <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height . 'px' ?>" <?php } ?>
-                                    id="luckycycle_iframe" onload="document.getElementById('loadImg').style.display='none';"></iframe>
-                        </div>
-                    <?php
-                    }
+                    echo "<div>" . $poke['html_data'] . "</div>";
                     if (isset($after_information)) {
                         echo "<div>" . $after_information . "</div>";
                     }
                     ?>
                 </div>
                 <script type="text/javascript">
-                    var luckyCycleHtml = document.getElementById('content-api-luckycycle')
-                    var luckyCycleApi = document.getElementById('api-frame-luckycycle')
-                    if (luckyCycleApi) {
-                        luckyCycleApi.innerHTML = luckyCycleHtml.innerHTML;
-                        luckyCycleHtml.remove();
-                    }
+                    // var luckyCycleHtml = document.getElementById('content-api-luckycycle')
+                    // var luckyCycleApi = document.getElementById('api-frame-luckycycle')
+                    // if (luckyCycleApi) {
+                    //     luckyCycleApi.innerHTML = luckyCycleHtml.innerHTML;
+                    //     luckyCycleHtml.remove();
+                    // }
                 </script>
                 <?php
                 } else {
