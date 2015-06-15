@@ -136,6 +136,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
             'discount' => (string)$discount,
             'payment_method' => (string)$paymentMethodCode,
             'shipping_value' => (string)$order->getShippingAmount(),
+            'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
             'cart'=>$the_cart
         );
         //end sdk
@@ -163,47 +164,7 @@ $paymentMethodLuckyCycle = explode(",", Mage::getStoreConfig('snippetsdk/params/
                         if (isset($before_information)) {
                             echo "<div>" . $before_information . "</div>";
                         }
-                        if ($useImage) {
-                            if ($poke['banner_url'] == null) {
-                                if ($banner_default != null) {
-                                    ?>
-                                    <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                                        <img src="<?php echo 'http://'.$_SERVER['HTTP_HOST'].'/media'.'/upload/'.$banner_default; ?>"
-                                            <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
-                                            <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
-                                    </a>
-                                <?php } else {
-                                    $urlNoImage = Mage::helper('catalog/image')->init(Mage::getModel('catalog/product'),'image');
-                                    ?>
-                                    <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                                        <img src="<?php echo $urlNoImage?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
-                                            <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
-                                    </a>
-                                <?php
-                                }
-                            } else {
-                                ?>
-                                <a href="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>" target="_blank" id="lc_banner_url">
-                                    <img src="<?php echo $poke['banner_url'] ?>" <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
-                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?> style="margin: auto; max-width: 98%" />
-                                </a>
-                            <?php
-                            }
-                        } else {
-                            ?>
-                            <div style="text-align: center">
-                                <iframe frameborder="0"
-                                        src="https://www.luckycycle.com/play/<?php echo $poke['computed_hash'] ?>"
-                                        target="_blank"
-                                        align="center"
-                                        scrolling="no"
-                                        style="margin: auto; max-width: 98%"
-                                        <?php if ($iframe_width) { ?> width="<?php echo $iframe_width.'px' ?>" <?php } ?>
-                                        <?php if ($iframe_height) { ?>  height="<?php echo $iframe_height.'px' ?>" <?php } ?>
-                                        id="luckycycle_iframe"></iframe>
-                            </div>
-                        <?php
-                        }
+                        echo "<div>" . $poke['html_data'] . "</div>";
                         if (isset($after_information)) {
                             echo "<div>" . $after_information . "</div>";
                         }
