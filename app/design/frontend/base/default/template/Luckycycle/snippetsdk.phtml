@@ -115,52 +115,52 @@ if ($enabledSnippet) {
             'discount' => (string)$discount,
             'payment_method' => (string)$paymentMethodCode,
             'shipping_value' => (string)$order->getShippingAmount(),
-            'poke_data' => '{ "coupon: "'.(string)$couponCode.'", "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
+            'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
             'cart' => $the_cart
         );
 
         try {
             // Make API call to Luckycycle
             $poke = $req->poke($pokedata);
-
-            if($poke)
-            {
-                // If response says that the user can play
-                if ($poke['can_play'] == true) {
-                    // show Luckycycle iframe
-                    ?>
-                    <div id="content-api-luckycycle">
-                        <?php
-                        // Show text above iframe
-                        if (isset($before_information)) {
-                            echo "<div><p>" . $before_information . "</p></div>";
-                        }
-                        // Show iframe
-                        echo "<div>" . $poke['html_data'] . "</div>";
-                        // Show text below iframe
-                        if (isset($after_information)) {
-                            echo "<div><p>" . $after_information . "</p></div>";
-                        }
-                        ?>
-                    </div>
-                
-                <?php
-                } else {
-                    // show Error message
-                    ?>
-                    <div id="luckycycle-error-message" style="display:none;">
-                        <?php
-                        // Show error message
-                        echo "<div><p>" . $poke['message'] . "</p></div>";
-                        ?>
-                    </div>
-                <?php
-                }
-            } else {
-                Mage::log("Luckycycle didnt get a valid response from the API call.");
-            }
         } catch (Exception $e) {
             Mage::log("Luckycycle : ". $e->getMessage());
+        }
+
+        if($poke)
+        {
+            // If response says that the user can play
+            if ($poke['can_play'] == true) {
+                // show Luckycycle iframe
+                ?>
+                <div id="content-api-luckycycle">
+                    <?php
+                    // Show text above iframe
+                    if (isset($before_information)) {
+                        echo "<div><p>" . $before_information . "</p></div>";
+                    }
+                    // Show iframe
+                    echo "<div>" . $poke['html_data'] . "</div>";
+                    // Show text below iframe
+                    if (isset($after_information)) {
+                        echo "<div><p>" . $after_information . "</p></div>";
+                    }
+                    ?>
+                </div>
+            
+            <?php
+            } else {
+                // show Error message
+                ?>
+                <div id="luckycycle-error-message" style="display:none;">
+                    <?php
+                    // Show error message
+                    echo "<div><p>" . $poke['message'] . "</p></div>";
+                    ?>
+                </div>
+            <?php
+            }
+        } else {
+            Mage::log("Luckycycle didnt get a valid response from the API call.");
         }
     } else {
         Mage::log("Luckycycle : Wrong API key or operation ID.");
