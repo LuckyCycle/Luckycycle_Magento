@@ -157,7 +157,7 @@ if ($enabledSnippet) {
                 <?php
                 }
             } else {
-                Mage::log("Luckycycle didnt get a valid response from the API call.")
+                Mage::log("Luckycycle didnt get a valid response from the API call.");
             }
         } catch (Exception $e) {
             Mage::log("Luckycycle : ". $e->getMessage());
