@@ -9,14 +9,16 @@ $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $before_information = Mage::getStoreConfig('snippetsdk/params/before_information');
 $after_information = Mage::getStoreConfig('snippetsdk/params/after_information');
 
+// Get global data
+$storeCode = Mage::app()->getStore()->getCode();
+$userIP = Mage::helper('core/http')->getRemoteAddr();
+
 // Get data about current order
 $orderId = $this->getOrderId();
 $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
 $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 $orderDetails = $order->getData();
-$storeCode = Mage::app()->getStore()->getCode();
-$userIP = Mage::helper('core/http')->getRemoteAddr();
 $couponCode = $orderDetails['coupon_code'];
 $discount = 0;
 

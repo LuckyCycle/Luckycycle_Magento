@@ -4,8 +4,8 @@ require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
 
 // Get module settings from admin panel
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
-$apiKey = Mage::getStoreConfig('snippetsdk/params/api_id');
-$operationKey = Mage::getStoreConfig('snippetsdk/params/operation_id');
+$apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
+$operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $before_information = Mage::getStoreConfig('snippetsdk/params/before_information');
 $after_information = Mage::getStoreConfig('snippetsdk/params/after_information');
 
@@ -13,37 +13,23 @@ $after_information = Mage::getStoreConfig('snippetsdk/params/after_information')
 $storeCode = Mage::app()->getStore()->getCode();
 $userIP = Mage::helper('core/http')->getRemoteAddr();
 
+// Get list of orders
+$_orderIds = Mage::getSingleton('core/session')->getData('order_ids');
+
+// Get each order
+foreach ($_orderIds as $orderId => $incrementId) {
+
+    // Get data about current order
+    $order = Mage::getModel('sales/order')->loadByIncrementId($incrementId);
+    $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+    $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
+    $orderDetails = $order->getData();
+    $couponCode = $orderDetails['coupon_code'];
+    $discount = 0;
+}
+
 if ($enabledSnippet) {
     if($operationKey && $apiKey) {
-
-        // Get list of orders
-        $_orderIds = Mage::getSingleton('core/session')->getData('order_ids');
-
-        // Init variables
-        $amount = 0;
-        $orderMultiAddressId = "";
-        $i = 0;
-        $orderIdFirst = 0;
-        $multiAddressItems = array();
-
-        // Get each order
-        foreach ($_orderIds as $orderId => $incrementId) {
-            // Increment order ID
-            if ($i == 0) {
-                $orderMultiAddressId .= $incrementId;
-            } else {
-                $orderMultiAddressId .= "_" . $incrementId;
-            }
-            $i++;
-
-            // Get data about current order
-            $order = Mage::getModel('sales/order')->loadByIncrementId($incrementId);
-            $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
-            $orderDetails = $order->getData();
-            $couponCode = $orderDetails['coupon_code'];
-            $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
-            $discount = 0;
-        }
 
         // Get user ID
         $customerId = Mage::getSingleton('customer/session')->getCustomerId();
@@ -58,7 +44,7 @@ if ($enabledSnippet) {
             $firstName = $quote->getBillingAddress()->getFirstname();
             $lastName = $quote->getBillingAddress()->getLastname();
             $emailCustomer = $quote->getBillingAddress()->getEmail();
-            $customerId = "guest_" . md5("guest".$emailCustomer);
+            $customerId = "guest_" . md5("guest".$emailCustomer.uniqid());
         }
 
         // Get currency / locale
