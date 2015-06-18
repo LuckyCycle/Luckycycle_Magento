@@ -44,16 +44,10 @@
     </p>
     <?php endif; ?>
     <?php echo $this->getChildHtml() ?>
+    
     <!--Frame LuckyCycle-->
     <div id="api-frame-luckycycle" style="text-align: center"></div>
-    <script type="text/javascript">
-        var luckyCycleHtml = document.getElementById('content-api-luckycycle')
-        var luckyCycleApi = document.getElementById('api-frame-luckycycle')
-        if (luckyCycleApi) {
-            luckyCycleApi.innerHTML = luckyCycleHtml.innerHTML;
-            luckyCycleHtml.remove();
-        }
-    </script>
+
     <div class="buttons-set">
         <button type="button" title="<?php echo $this->__('Continue Shopping') ?>" class="button" onclick="setLocation('<?php echo $this->getContinueUrl() ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
     </div>
