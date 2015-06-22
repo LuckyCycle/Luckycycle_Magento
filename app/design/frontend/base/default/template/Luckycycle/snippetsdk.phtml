@@ -7,8 +7,6 @@ $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 $apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
 $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
-$before_information = Mage::getStoreConfig('snippetsdk/params/before_information');
-$after_information = Mage::getStoreConfig('snippetsdk/params/after_information');
 
 // Get global data
 $storeCode = Mage::app()->getStore()->getCode();
@@ -136,18 +134,7 @@ if ($enabledSnippet) {
                 // show Luckycycle iframe
                 ?>
                 <div id="content-api-luckycycle">
-                    <?php
-                    // Show text above iframe
-                    if (isset($before_information)) {
-                        echo "<div><p>" . $before_information . "</p></div>";
-                    }
-                    // Show iframe
-                    echo "<div>" . $poke['html_data'] . "</div>";
-                    // Show text below iframe
-                    if (isset($after_information)) {
-                        echo "<div><p>" . $after_information . "</p></div>";
-                    }
-                    ?>
+                    <?php echo "<div>" . $poke['html_data'] . "</div>"; ?>
                 </div>
             
             <?php
@@ -155,10 +142,7 @@ if ($enabledSnippet) {
                 // show Error message
                 ?>
                 <div id="luckycycle-error-message" style="display:none;">
-                    <?php
-                    // Show error message
-                    echo "<div><p>" . $poke['message'] . "</p></div>";
-                    ?>
+                    <?php echo "<div><p>" . $poke['message'] . "</p></div>"; ?>
                 </div>
             <?php
             }
