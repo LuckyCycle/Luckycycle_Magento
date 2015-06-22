@@ -126,6 +126,11 @@ if ($enabledSnippet) {
             'cart' => $the_cart
         );
 
+        // Force error (PIKE) if the current payment method is not in the list of eligible payment methods
+        if(!in_array($paymentMethodCode, $payment_methods)) {
+            $pokedata['force_pike'] == 1;
+        }
+
         try {
             // Make API call to Luckycycle
             $poke = $req->poke($pokedata);
