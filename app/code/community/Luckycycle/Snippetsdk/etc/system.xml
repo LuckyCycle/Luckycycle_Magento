@@ -48,18 +48,28 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </operation_id>
+                        <payment_method_luckycyclesdk>
+                            <label translate="label">Eligible payment methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>4</sort_order>
+                            <source_model>Luckycycle_Snippetsdk_Model_Paymentmethod</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </payment_method_luckycyclesdk>
                         <before_information>
                             <label translate="label">Custom text above LuckyCycle iframe (optional)</label>
                             <frontend_type>textarea</frontend_type>
-                            <sort_order>4</sort_order>
+                            <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </before_information>
                         <after_information>
-                            <label translate="label">Custom text below LuckyCycle iframe (optional)</label>
+                            <label translate="label">Custom text below LuckyCycle iframe (optional)
+                            </label>
                             <frontend_type>textarea</frontend_type>
-                            <sort_order>5</sort_order>
+                            <sort_order>6</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

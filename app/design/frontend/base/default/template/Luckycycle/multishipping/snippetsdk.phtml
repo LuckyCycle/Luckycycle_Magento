@@ -6,6 +6,7 @@ require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 $apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
 $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
+$payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
 $before_information = Mage::getStoreConfig('snippetsdk/params/before_information');
 $after_information = Mage::getStoreConfig('snippetsdk/params/after_information');
 

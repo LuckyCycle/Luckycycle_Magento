@@ -7,7 +7,7 @@ class Luckycycle_Snippetsdk_Model_Paymentmethod
 	{
 	   $payments = Mage::getSingleton('payment/config')->getActiveMethods();
 
-	   $methods = array(array('value'=>'', 'label'=>Mage::helper('adminhtml')->__('--Please Select--')));
+	   $methods = array(array('value'=>'', 'label'=>Mage::helper('adminhtml')->__('(ctrl+click to select more)')));
 
 	   foreach ($payments as $paymentCode=>$paymentModel) {
             $paymentTitle = Mage::getStoreConfig('payment/'.$paymentCode.'/title');
