@@ -134,22 +134,12 @@ if ($enabledSnippet) {
 
         if($poke)
         {
-            // If response says that the user can play
-            if ($poke['can_play'] == true) {
-                // show Luckycycle iframe
-                ?>
-                <div id="content-api-luckycycle">
-                    <?php echo "<div>" . $poke['html_data'] . "</div>"; ?>
-                </div>
-            
-            <?php
-            } else {
-                // show Error message
-                ?>
-                <div id="luckycycle-error-message" style="display:none;">
-                    <?php echo "<div><p>" . $poke['message'] . "</p></div>"; ?>
-                </div>
-            <?php
+            // Show html_data response (either the iframe or an error)
+            ?>
+            <div id="content-api-luckycycle">
+                <?php echo "<div>" . $poke['html_data'] . "</div>"; ?>
+            </div>
+        <?php
             }
         } else {
             Mage::log("Luckycycle didnt get a valid response from the API call.");
