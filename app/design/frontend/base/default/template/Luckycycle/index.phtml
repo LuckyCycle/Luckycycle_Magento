@@ -1,6 +1,13 @@
 <?php 
+// Get module settings from admin panel
+$enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 $operationKey = Mage::getStoreConfig('snippetsdk/params/operation_id');
+
 $locale = strtolower(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2));
+
+if(!$enabledSnippet) {
+	echo "<div id=\"lck-error\"><h2>Luckycycle module NOT enabled</h2></div>";
+}
 
 ?>
 
