@@ -1,3 +1,11 @@
+<!--
+
+  This file defines a route for howitwork page (mp) to be hosted inside an iframe (/luckycycle)
+  It also defines a bare Mage Block & a Helper new classes
+  It also set some default values for the extension configuration
+
+-->
+
 <config>
     <modules>
         <Luckycycle_Snippetsdk>
@@ -38,8 +46,12 @@
         <snippetsdk>
             <params>
                 <enabled>0</enabled>
+                <apipoke>1</apipoke>
                 <use_iframe>1</use_iframe>
             </params>
+            <howitworks>
+              <height>2500</height>
+            </howitworks>
         </snippetsdk>
     </default>
 </config>

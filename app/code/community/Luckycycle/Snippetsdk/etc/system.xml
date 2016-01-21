@@ -1,3 +1,10 @@
+<!--
+
+This file defines the form in the Luckycycle configuration panel
+Field by field :-)
+
+ -->
+
 <config>
     <tabs>
         <luckycyclesdk module="snippetsdk">
@@ -32,10 +39,20 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enabled>
+                        <apipoke translate="label">
+                            <label>Make the poke with API</label>
+                            <comment>If deactivated, the extension will only spit out _lcdata in a js object</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </apipoke>
                         <api_id>
                             <label translate="label">API key</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>2</sort_order>
+                            <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -43,7 +60,7 @@
                         <operation_id>
                             <label translate="label">Operation ID</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>3</sort_order>
+                            <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -51,7 +68,7 @@
                         <payment_method_luckycyclesdk>
                             <label translate="label">Eligible payment methods</label>
                             <frontend_type>multiselect</frontend_type>
-                            <sort_order>4</sort_order>
+                            <sort_order>5</sort_order>
                             <source_model>Luckycycle_Snippetsdk_Model_Paymentmethod</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -59,6 +76,52 @@
                         </payment_method_luckycyclesdk>
                     </fields>
                 </params>
+                <howitworks translate="label">
+                    <label>How it works page</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>13</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <height>
+                            <label translate="label">Height in pixels</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </height>
+                    </fields>
+                </howitworks>
+                <js_snippet translate="label">
+                    <label>Alternative JS integration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>15</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <custom_js>
+                            <label translate="label">Custom JS url to inject</label>
+                            <comment>Use this if you have a custom checkout process / Luckycycle will provide the url</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </custom_js>
+                        <salt>
+                            <label translate="label">Salt (for md5 signature)</label>
+                            <comment>Use this if you have a custom checkout process / Luckycycle will provide the salt</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </salt>
+                    </fields>
+                </js_snippet>
             </groups>
         </snippetsdk>
     </sections>
