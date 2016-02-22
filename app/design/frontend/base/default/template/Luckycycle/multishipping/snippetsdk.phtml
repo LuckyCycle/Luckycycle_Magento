@@ -7,6 +7,7 @@ $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 $apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
 $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
+$salt = Mage::getStoreConfig('snippetsdk/js_snippet/salt');
 
 // Get global data
 $storeCode = Mage::app()->getStore()->getCode();
@@ -145,7 +146,7 @@ if ($enabledSnippet) {
         if(!in_array($paymentMethodCode, $payment_methods)) {
             $pokedata['force_pike'] == 1;
         }
-
+        Mage::log("Luckycycle : trying multishipping");
         try {
             // Make API call to Luckycycle
             $poke = $req->poke($pokedata);

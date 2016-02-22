@@ -8,6 +8,7 @@ $apipoke = Mage::getStoreConfig('snippetsdk/params/apipoke');
 $apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
 $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
+$salt = Mage::getStoreConfig('snippetsdk/js_snippet/salt');
 
 // Get global data
 $storeCode = Mage::app()->getStore()->getCode();
@@ -115,6 +116,7 @@ if ($enabledSnippet) {
 
             // Setup API call to Luckycycle
             $req = new LuckyCycleApi('https://www.luckycycle.com');
+            //$req = new LuckyCycleApi('http://10.1.205.10:3000');
             $req->setApiKey($apiKey);
             $req->setOperationId($operationKey);
 
@@ -137,7 +139,7 @@ if ($enabledSnippet) {
                 'shipping_value' => (string)$order->getShippingAmount(),
                 "order_date" => (string)$order->getCreatedAt(),
                 'signature' => $sig,
-                'poke_software_version' => "Magento ".(string)Mage::getVersion()." snippedsdk v1.5",
+                'poke_software_version' => "Magento ".(string)Mage::getVersion()." snippedsdk v2.1",
                 //'order_date' => (string)$order->getCreatedAt(),
                 'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
                 'cart' => $the_cart
@@ -151,7 +153,7 @@ if ($enabledSnippet) {
             if(!in_array($paymentMethodCode, $payment_methods)) {
                 $pokedata['force_pike'] == 1;
             }
-
+            Mage::log("Luckycycle : trying normal shipping");
             try {
                 // Make API call to Luckycycle
                 $poke = $req->poke($pokedata);
