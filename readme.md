@@ -9,3 +9,7 @@
 * population of _lcdata (as alt method)
 * async injection of snippet (as alt method)
 * option to deactivate api call (if alt method used)
+
+# version 3.0 added
+* poke done in footer
+* deactivated multishipping

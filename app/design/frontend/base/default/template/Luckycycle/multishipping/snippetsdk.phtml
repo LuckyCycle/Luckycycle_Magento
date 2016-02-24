@@ -1,19 +1,19 @@
 <?php
 
-$lastQuoteId = Mage::getSingleton('checkout/session')->getLastQuoteId();
-Mage::log("quoteId:". $lastQuoteId);
-// $orderCollection = Mage::getModel('sales/order')->getCollection();
-// $orderCollection = $orderCollection->addFilter('quote_id', $lastQuoteId);
-// $orders = $orderCollection->getItems();
+// $lastQuoteId = Mage::getSingleton('checkout/session')->getLastQuoteId();
+// Mage::log("quoteId:". $lastQuoteId);
+// // $orderCollection = Mage::getModel('sales/order')->getCollection();
+// // $orderCollection = $orderCollection->addFilter('quote_id', $lastQuoteId);
+// // $orders = $orderCollection->getItems();
 
-// $orderCollection = Mage::getModel('sales/order')->getCollection();
-// $orderIds = $orderCollection->getSelect()
-//      ->reset(Zend_Db_Select::COLUMNS)
-//      ->columns('calendar_from')
-//      ->columns('entity_id');
+// // $orderCollection = Mage::getModel('sales/order')->getCollection();
+// // $orderIds = $orderCollection->getSelect()
+// //      ->reset(Zend_Db_Select::COLUMNS)
+// //      ->columns('calendar_from')
+// //      ->columns('entity_id');
 
-$session = Mage::getSingleton("core/session");
-//$session->setData("orderId", $orderIds);
-$session->setData("multi", 1);
+// $session = Mage::getSingleton("core/session");
+// //$session->setData("orderId", $orderIds);
+// $session->setData("multi", 1);
 
-//Mage::log("ids:". join(',' , $orderIds));
+// //Mage::log("ids:". join(',' , $orderIds));
