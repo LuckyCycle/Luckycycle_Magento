@@ -1,9 +1,6 @@
 <?php
 // this file prepare all the data for a poke
-// Get data about current order
-$orderId = $this->getOrderId();
-Mage::log("OrderId: ".$orderId);
-
+// called by js.phtml
 $session = Mage::getSingleton("core/session");
 $multi = $session->getData("multi");
 Mage::log("Prepare is loaded in mode " . $multi);
@@ -20,7 +17,7 @@ $operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
 $storeCode = Mage::app()->getStore()->getCode();
 $userIP = Mage::helper('core/http')->getRemoteAddr();
 
-//$orderId = $session->getData("orderId");
+$orderId = $session->getData("orderId");
 $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 Mage::log("Received from session:".$orderId);
 $paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();

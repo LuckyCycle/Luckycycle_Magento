@@ -1,105 +1,19 @@
 <?php
 
-define('LC_VERSION',"3.0");
+// Get data about current order
+$orderId = $this->getOrderId();
+Mage::log("OrderId: ".$orderId);
+$session = Mage::getSingleton("core/session");
+$session->setData("multi", 0);
 
-// this just embed a javascript object _lcdata into the footer and try to poke if configured and inject snippet of html/js
-// Get module settings from admin panel
-$enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
+if($orderId){
+    $session->setData("orderId", $orderId);
+} else {
+    // $session->setData("orderId", false);
+    // $session->clear();
+    // $_orderIds = Mage::getSingleton('core/session')->getData('order_ids');
+    // $session->setData("orderIds", $_orderIds);
+    // Mage::log("snippets:".$_orderIds);
+}
 
-if ($enabledSnippet) {
-        // get all the needed data
-        require_once('prepare.phtml');
-        if($apipoke){
-            require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
-            if ($operationKey && $apiKey) {
-                // Setup API call to Luckycycle
-                $req = new LuckyCycleApi('https://www.luckycycle.com');
-                //$req = new LuckyCycleApi('http://10.1.205.10:3000');
-                $req->setApiKey($apiKey);
-                $req->setOperationId($operationKey);
-
-                // Prepare poke data
-                $pokedata = array(
-                    'user_uid' => (string)$customerId,
-                    'item_uid' => (string)$orderId,
-                    'item_value' => (string)$amount,
-                    'item_currency' => (string)$currencyCode,
-                    'language' => (string)$language,
-                    'firstname' => (string)$firstName,
-                    'lastname' => (string)$lastName,
-                    'email' => (string)$emailCustomer,
-                    'discount' => (string)$discount,
-                    'payment_method' => (string)$paymentMethodCode,
-                    'shipping_value' => (string)$order->getShippingAmount(),
-                    "order_date" => (string)$order->getCreatedAt(),
-                    'signature' => $sig,
-                    'poke_software_version' => "Magento ".(string)Mage::getVersion()." LC v".LC_VERSION,
-                    //'order_date' => (string)$order->getCreatedAt(),
-                    'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
-                    'cart' => $the_cart
-                    );
-
-                $session->setData("pokedata", $pokedata);
-
-                // Force error (PIKE) if the current payment method is not in the list of eligible payment methods
-                if(!in_array($paymentMethodCode, $payment_methods)) {
-                    $pokedata['force_pike'] == 1;
-                }
-
-                try {
-                    // Make API call to Luckycycle
-                    $poke = $req->poke($pokedata);
-                } catch (Exception $e) {
-                    Mage::log("Luckycycle : ". $e->getMessage());
-                }
-
-                if($poke) {
-                    // Show html_data response (either the iframe or an error)
-                    ?>
-                    <div id="content-api-luckycycle">
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                document.getElementsByClassName('buttons-set')[0].insertAdjacentHTML('beforebegin',"<?php echo "<div id='lcframe_container'>" . $poke['html_data'] . "</div>"; ?>");
-                                if (typeof console == "undefined") {window.console = {log: function () {}};};console.log("Poke done, html_data injected");
-                            }, false);
-                        </script>
-                    </div>
-                    <?php
-                } else {
-                    Mage::log("Luckycycle didnt get a valid response from the API call.");
-                }
-            } else {
-                Mage::log("Luckycycle : Wrong API key or operation ID.");
-            }
-        } else {
-            // we still inject lcframe just in case we directly use fjs
-            Mage::log("Luckycycle : API poke off");
-            echo('<div id="lcframe"></div>');
-        }
-        ?>
-        <script type="text/javascript">
-            var _lcdata = {
-                "user_uid":"<?php echo (string)$customerId ?>",
-                "item_uid":"<?php echo (string)$orderId ?>",
-                "item_value":"<?php echo (string)$amount ?>",
-                "language":"<?php echo (string)$language ?>",
-                "firstname":"<?php echo (string)$firstName ?>",
-                "lastname":"<?php echo (string)$lastName ?>",
-                "email":"<?php echo  (string)$emailCustomer ?>",
-                "discount":"<?php echo (string)$discount ?>",
-                "payment_method":"<?php echo (string)$paymentMethodCode ?>",
-                "shipping_value":"<?php echo (string)$order->getShippingAmount() ?>",
-                "poke_software_version":"<?php echo "Magento ".(string)Mage::getVersion()." LC v".LC_VERSION ?>",
-                "order_date":"<?php echo (string)$order->getCreatedAt() ?>",
-                "segment":"<?php echo $segment ?>",
-                "signature":"<?php echo $sig ?>",
-                "cart": <?php echo json_encode($the_cart,JSON_UNESCAPED_SLASHES); ?>
-            };
-            <?php if ( strlen($inject)>10 ) { ?>
-                var __f=document.createElement('script');__f.setAttribute("type","text/javascript");__f.setAttribute("src", "<?php echo $inject ?>");__f.async=!0;document.getElementsByTagName("head")[0].appendChild(__f);
-            <?php } ?>
-        </script>
-<?php
- } else {
-    Mage::log("Luckycycle module is not enable");
-} ?>
+?>

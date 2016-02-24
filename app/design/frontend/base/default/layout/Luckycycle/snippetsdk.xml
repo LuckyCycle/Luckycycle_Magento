@@ -19,11 +19,11 @@
 			<block type="checkout/onepage_success" name="checkout.snippetsdk" template="Luckycycle/snippetsdk.phtml"/>
 		</reference> -->
 		<reference name="checkout.success">
-			<block type="checkout/onepage_success" name="luckycycle_poke" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="toHtml" />
+			<block type="checkout/onepage_success" name="checkout.snippetsdk" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="" />
 		</reference>
-<!-- 		<reference name="checkout.success.js">
-			<block type="page/html_footer" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
-		</reference> -->
+		<reference name="checkout.success.js">
+			<block type="page/html" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
+		</reference>
 	</checkout_onepage_success>
 
 	<checkout_multishipping_success>
