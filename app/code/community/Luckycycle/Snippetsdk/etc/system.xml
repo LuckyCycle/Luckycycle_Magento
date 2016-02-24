@@ -14,7 +14,7 @@ Field by field :-)
     </tabs>
     <sections>
         <snippetsdk translate="label" module="snippetsdk">
-            <label>Luckycycle Settings</label>
+            <label>Luckycycle</label>
             <tab>luckycyclesdk</tab>
             <frontend_type>text</frontend_type>
             <sort_order>1000</sort_order>
@@ -74,6 +74,14 @@ Field by field :-)
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </payment_method_luckycyclesdk>
+                        <selector>
+                            <label translate="label">Selector</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </selector>
                     </fields>
                 </params>
                 <howitworks translate="label">

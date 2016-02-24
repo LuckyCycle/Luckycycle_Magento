@@ -1,138 +1,108 @@
 <?php
 
-// this just embed a javascript object _lcdata into the footer
+define('LC_VERSION',"3.0");
 
+// this just embed a javascript object _lcdata into the footer and try to poke if configured and inject snippet of html/js
 // Get module settings from admin panel
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
 
 if ($enabledSnippet) {
-	$operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
-	$payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
-	$salt = Mage::getStoreConfig('snippetsdk/js_snippet/salt');
-	$inject = Mage::getStoreConfig('snippetsdk/js_snippet/custom_js');
+	if($multi==0){
+		// get all the needed data
+		$orderId = $this->getOrderId();
+		require_once('prepare.phtml');
 
-	// Get global data
-	$storeCode = Mage::app()->getStore()->getCode();
-	$userIP = Mage::helper('core/http')->getRemoteAddr();
+		if(@$apipoke){
+			require_once(Mage::getBaseDir('lib') . '/luckysdk/lucky.php');
+			if ($operationKey && $apiKey) {
+				// Setup API call to Luckycycle
+				$req = new LuckyCycleApi('https://www.luckycycle.com');
+				//$req = new LuckyCycleApi('http://10.1.205.10:3000');
+				$req->setApiKey($apiKey);
+				$req->setOperationId($operationKey);
 
-	$session = Mage::getSingleton("core/session");
-	$orderId = $session->getData("orderId");
-	$order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-	$paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
-	$quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
-	$orderDetails = $order->getData();
-	$couponCode = $orderDetails['coupon_code'];
-	$discount = $order->getDiscountAmount();
+				// Prepare poke data
+				$pokedata = array(
+					'user_uid' => (string)$customerId,
+					'item_uid' => (string)$orderId,
+					'item_value' => (string)$amount,
+					'item_currency' => (string)$currencyCode,
+					'language' => (string)$language,
+					'firstname' => (string)$firstName,
+					'lastname' => (string)$lastName,
+					'email' => (string)$emailCustomer,
+					'discount' => (string)$discount,
+					'payment_method' => (string)$paymentMethodCode,
+					'shipping_value' => (string)$order->getShippingAmount(),
+					"order_date" => (string)$order->getCreatedAt(),
+					'signature' => $sig,
+					'poke_software_version' => "Magento ".(string)Mage::getVersion()." LC v".LC_VERSION,
+					//'order_date' => (string)$order->getCreatedAt(),
+					'poke_data' => '{ "store_code": "'.(string)$storeCode.'", "user_ip": "'.(string)$userIP.'"}',
+					'cart' => $the_cart
+					);
 
-	$customerId = Mage::getSingleton('customer/session')->getCustomerId();
-	if ($customerId) {
-		// ... when logged in
-		$customer = Mage::getSingleton('customer/session')->getCustomer();
-		$firstName = $customer->getFirstname();
-		$lastName = $customer->getLastname();
-		$emailCustomer = $customer->getEmail();
-		$segment = $customer->getGroupId();
-	} else {
-		// ... when not logged in (guest)
-		$firstName = $quote->getBillingAddress()->getFirstname();
-		$lastName = $quote->getBillingAddress()->getLastname();
-		$emailCustomer = $quote->getBillingAddress()->getEmail();
-		$customerId = "guest_" . md5("guest".$emailCustomer);
-		$segment = "";
-	}
+				$session->setData("pokedata", $pokedata);
 
-	// Get currency / locale
-	$currency = $order->getOrderCurrency();
-	if (is_object($currency)) {
-		$currencyCode = $currency->getCurrencyCode();
-	}
-	$currencySymbol = Mage::app()->getLocale()->currency($currencyCode)->getSymbol();
-	$language = Mage::getStoreConfig('general/locale/code', Mage::app()->getStore()->getId());
-	$language = explode('_', $language);
-	$language = $language[0];
+				// Force error (PIKE) if the current payment method is not in the list of eligible payment methods
+				if(!in_array($paymentMethodCode, $payment_methods)) {
+					$pokedata['force_pike'] == 1;
+				}
 
-	// Get amount
-	$amount = $order->getGrandTotal() - $order->getShippingAmount();
-	$real_paid = $quote['grand_total'];
+				try {
+					// Make API call to Luckycycle
+					$poke = $req->poke($pokedata);
+				} catch (Exception $e) {
+					Mage::log("Luckycycle : ". $e->getMessage());
+				}
 
-	// Get cart
-	$the_cart = array();
-
-	foreach ($quote->getAllItems() as $order_item) {
-
-	// Get item price including tax -- excluding free products
-		$price = $order_item->getPriceInclTax();
-		if ($price > 0) {
-			$item['price'] = $order_item->getPriceInclTax();
-			$item['quantity'] = $order_item->getQty();
-			$item['product_id'] = $order_item->getProduct()->getId();
-			$item['product_name'] = $order_item->getProduct()->getName();
-			$item['product_url'] = $order_item->getProduct()->getProductUrl();
-
-			// Increment total discount with this item
-			$discount += $order_item->getBaseDiscountAmount();
-
-			// Get item main category ID
-			$topCategory = Mage::getResourceModel('catalog/category_collection')
-			->addIdFilter($order_item->getProduct()->getCategoryIds())
-			->setOrder('level', 'ASC')
-			->setPage(1, 1)
-			->getFirstItem();
-			$topCategoryId = $topCategory->getId();
-			$item['category_id'] = $topCategoryId;
-
-			// get category list
-			$cats = $order_item->getProduct()->getCategoryCollection();
-			$temp=[];
-			foreach($cats as $cat) {
-				array_push($temp, $cat->getId());
-			}
-			$item['categories'] = implode(',', $temp);
-
-			// Get product ID
-			$model_product = Mage::getModel('catalog/product');
-			$_productObject = $model_product->load($order_item->getProduct()->getId());
-
-			// Get manufacturer ID
-			if ($_productObject->getAttributeText('manufacturer')) {
-				$item['manufacturer_id'] = $_productObject->getAttributeText('manufacturer');
+				if($poke) {
+					// Show html_data response (either the iframe or an error)
+					?>
+					<div id="content-api-luckycycle">
+						<script>
+							document.addEventListener('DOMContentLoaded', function() {
+								document.getElementsByClassName('buttons-set')[0].insertAdjacentHTML('beforebegin',"<?php echo "<div id='lcframe_container'>" . $poke['html_data'] . "</div>"; ?>");
+								if (typeof console == "undefined") {window.console = {log: function () {}};};console.log("Poke done, html_data injected");
+							}, false);
+						</script>
+					</div>
+					<?php
+				} else {
+					Mage::log("Luckycycle didnt get a valid response from the API call.");
+				}
 			} else {
-				$item['manufacturer_id'] = 1;
+				Mage::log("Luckycycle : Wrong API key or operation ID.");
 			}
-
-			$item['reference'] = 'reference';
-
-			// Fill the cart with item
-			array_push($the_cart, $item);
+		} else {
+			// we still inject lcframe just in case we directly use fjs
+			Mage::log("Luckycycle : API poke off");
+			echo('<div id="lcframe"></div>');
 		}
-	}
-
-	// signature stuff
-	$to_sign = trim((string)$orderId . (string)$customerId . $salt);
-	$sig = md5($to_sign);
-
-	?>
-
-	<script type="text/javascript">
-		var _lcdata = {
-			"user_uid":"<?php echo (string)$customerId ?>",
-			"item_uid":"<?php echo (string)$orderId ?>",
-			"item_value":"<?php echo (string)$amount ?>",
-			"language":"<?php echo (string)$language ?>",
-			"firstname":"<?php echo (string)$firstName ?>",
-			"lastname":"<?php echo (string)$lastName ?>",
-			"email":"<?php echo  (string)$emailCustomer ?>",
-			"discount":"<?php echo (string)$discount ?>",
-			"payment_method":"<?php echo (string)$paymentMethodCode ?>",
-			"shipping_value":"<?php echo (string)$order->getShippingAmount() ?>",
-			"poke_software_version":"<?php echo "Magento ".(string)Mage::getVersion()." snippedsdk v1.5" ?>",
-			"order_date":"<?php echo (string)$order->getCreatedAt() ?>",
-			"segment":"<?php echo $segment ?>",
-			"signature":"<?php echo $sig ?>",
-			"cart": <?php echo json_encode($the_cart,JSON_UNESCAPED_SLASHES); ?>
-		};
-		<?php if ( strlen($inject)>10 ) { ?>
-			var __f=document.createElement('script');__f.setAttribute("type","text/javascript");__f.setAttribute("src", "<?php echo $inject ?>");__f.async=!0;document.getElementsByTagName("head")[0].appendChild(__f);
-		<?php } ?>
-	</script>
-<?php } ?>
+		?>
+		<script type="text/javascript">
+			var _lcdata = {
+				"user_uid":"<?php echo (string)$customerId ?>",
+				"item_uid":"<?php echo (string)$orderId ?>",
+				"item_value":"<?php echo (string)$amount ?>",
+				"language":"<?php echo (string)$language ?>",
+				"firstname":"<?php echo (string)$firstName ?>",
+				"lastname":"<?php echo (string)$lastName ?>",
+				"email":"<?php echo  (string)$emailCustomer ?>",
+				"discount":"<?php echo (string)$discount ?>",
+				"payment_method":"<?php echo (string)$paymentMethodCode ?>",
+				"shipping_value":"<?php echo (string)$order->getShippingAmount() ?>",
+				"poke_software_version":"<?php echo "Magento ".(string)Mage::getVersion()." LC v".LC_VERSION ?>",
+				"order_date":"<?php echo (string)$order->getCreatedAt() ?>",
+				"segment":"<?php echo $segment ?>",
+				"signature":"<?php echo $sig ?>",
+				"cart": <?php echo json_encode($the_cart,JSON_UNESCAPED_SLASHES); ?>
+			};
+			<?php if ( strlen($inject)>10 ) { ?>
+				var __f=document.createElement('script');__f.setAttribute("type","text/javascript");__f.setAttribute("src", "<?php echo $inject ?>");__f.async=!0;document.getElementsByTagName("head")[0].appendChild(__f);
+			<?php } ?>
+		</script>
+<?php }
+ } else {
+	Mage::log("Luckycycle module is not enable");
+} ?>

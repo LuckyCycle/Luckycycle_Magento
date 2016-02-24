@@ -1,48 +1,54 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
+	<default>
+		<reference name="head">
+			<block type="core/text" name="simple_example_javascript_block">
+				<action method="setText">
+					<text><![CDATA[<script type="text/javascript">if (typeof console == "undefined") {window.console = {log: function () {}};};console.log("luckycycle is loaded");</script>]]></text>
+				</action>
+			</block>
+		</reference>
+	</default>
 
-    <default>
-        <reference name="head">
-            <block type="core/text" name="simple_example_javascript_block">
-                <action method="setText">
-                    <text><![CDATA[<script type="text/javascript">console.log("luckycycle is loaded");</script>]]></text>
-                </action>
-            </block>
-        </reference>
-    </default>
+	<checkout_onepage_success translate="label">
+		<label>One Page Checkout Success</label>
+		<!-- <reference name="content">
+			<reference name="checkout.success">
+				<action method="setTemplate"><template>Luckycycle/success.phtml</template></action>
+			</reference>
+			<block type="checkout/onepage_success" name="checkout.snippetsdk" template="Luckycycle/snippetsdk.phtml"/>
+		</reference> -->
+		<reference name="checkout.success">
+			<block type="checkout/onepage_success" name="luckycycle_poke" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="" />
+		</reference>
+		<reference name="checkout.success.js">
+			<block type="page/html_footer" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
+		</reference>
+	</checkout_onepage_success>
 
-    <checkout_onepage_success translate="label">
-        <label>One Page Checkout Success</label>
-<!--         <reference name="content">
-            <reference name="checkout.success">
-                <action method="setTemplate"><template>Luckycycle/success.phtml</template></action>
-            </reference>
-            <block type="checkout/onepage_success" name="checkout.snippetsdk" template="Luckycycle/snippetsdk.phtml"/>
-        </reference> -->
-        <reference name="checkout.success">
-            <block type="checkout/onepage_success" name="luckycycle_poke" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="toHtml" />
-        </reference>
-        <reference name="checkout.success.js">
-            <block type="page/html_footer" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
-        </reference>
-    </checkout_onepage_success>
+	<checkout_multishipping_success>
+<!-- 		<reference name="content">
+		<reference name="checkout_success">
+				<action method="setTemplate"><template>Luckycycle/multishipping/success.phtml</template></action>
+			</reference>
+			<block before="-" type="checkout/multishipping_success" name="checkout.snippetsdk" template="Luckycycle/multishipping/snippetsdk.phtml"/>
+		</reference> -->
+		<reference name="checkout.success">
+			<block type="checkout/onepage_success" name="luckycycle_poke" as="luckycycle_poke" template="Luckycycle/multishipping/snippetsdk.phtml" output="toHtml" />
+		</reference>
+<!-- 		<reference name="checkout.success.js">
+			<block type="page/html_footer" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
+		</reference> -->
+	</checkout_multishipping_success>
 
-    <checkout_multishipping_success>
-        <reference name="content">
-<!--             <reference name="checkout_success">
-                <action method="setTemplate"><template>Luckycycle/multishipping/success.phtml</template></action>
-            </reference> -->
-            <block before="-" type="checkout/multishipping_success" name="checkout.snippetsdk" template="Luckycycle/multishipping/snippetsdk.phtml"/>
-        </reference>
-    </checkout_multishipping_success>
-
-    <snippetsdk_index_index>
-        <reference name="root">
-            <action method="setTemplate"><template>page/1column.phtml</template></action>
-        </reference>
-        <reference name="content">
-            <block type="snippetsdk/index" name="snippetsdk_index" template="Luckycycle/mp.phtml"/>
-        </reference>
-    </snippetsdk_index_index>
+	<!-- This is the MP page -->
+	<snippetsdk_index_index>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<reference name="content">
+			<block type="snippetsdk/index" name="snippetsdk_index" template="Luckycycle/mp.phtml"/>
+		</reference>
+	</snippetsdk_index_index>
 
 </layout>

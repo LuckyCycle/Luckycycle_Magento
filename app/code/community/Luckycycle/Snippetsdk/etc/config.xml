@@ -9,7 +9,7 @@
 <config>
     <modules>
         <Luckycycle_Snippetsdk>
-            <version>1.0.0</version>
+            <version>3.0.0</version>
         </Luckycycle_Snippetsdk>
     </modules>
     <frontend>

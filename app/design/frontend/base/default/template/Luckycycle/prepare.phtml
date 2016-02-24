@@ -1,0 +1,135 @@
+<?php
+// this file prepare all the data for a poke
+// called by js.phtml
+$session = Mage::getSingleton("core/session");
+$multi = $session->getData("multi");
+Mage::log("Prepare is loaded in mode " . $multi);
+
+$operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
+$payment_methods = explode(",", Mage::getStoreConfig('snippetsdk/params/payment_method_luckycyclesdk'));
+$salt = Mage::getStoreConfig('snippetsdk/js_snippet/salt');
+$inject = Mage::getStoreConfig('snippetsdk/js_snippet/custom_js');
+$apipoke = Mage::getStoreConfig('snippetsdk/params/apipoke');
+$apiKey = trim(Mage::getStoreConfig('snippetsdk/params/api_id'));
+$operationKey = trim(Mage::getStoreConfig('snippetsdk/params/operation_id'));
+
+// Get global data
+$storeCode = Mage::app()->getStore()->getCode();
+$userIP = Mage::helper('core/http')->getRemoteAddr();
+
+$orderId = $session->getData("orderId");
+$order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+Mage::log("Received from session:".$orderId);
+$paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
+$quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+$orderDetails = $order->getData();
+$couponCode = $orderDetails['coupon_code'];
+$discount = $order->getDiscountAmount();
+
+$customerId = Mage::getSingleton('customer/session')->getCustomerId();
+if ($customerId) {
+	// ... when logged in
+	$customer = Mage::getSingleton('customer/session')->getCustomer();
+	$firstName = $customer->getFirstname();
+	$lastName = $customer->getLastname();
+	$emailCustomer = $customer->getEmail();
+	$segment = $customer->getGroupId();
+} else {
+	// ... when not logged in (guest)
+	$firstName = $quote->getBillingAddress()->getFirstname();
+	$lastName = $quote->getBillingAddress()->getLastname();
+	$emailCustomer = $quote->getBillingAddress()->getEmail();
+	$customerId = "guest_" . md5("guest".$emailCustomer);
+	$segment = "";
+}
+
+// Get currency / locale
+$currency = $order->getOrderCurrency();
+if (is_object($currency)) {
+	$currencyCode = $currency->getCurrencyCode();
+}
+$currencySymbol = Mage::app()->getLocale()->currency($currencyCode)->getSymbol();
+$language = Mage::getStoreConfig('general/locale/code', Mage::app()->getStore()->getId());
+$language = explode('_', $language);
+$language = $language[0];
+
+// Get amount
+$amount = $order->getGrandTotal() - $order->getShippingAmount();
+$real_paid = $quote['grand_total'];
+
+// Mage::log($quote->getIsMultiShipping());
+// Mage::log((bool)(int)Mage::getStoreConfig('shipping/option/checkout_multiple'));
+// // if multishipping we overwrite some values
+// if((bool)(int)Mage::getStoreConfig('shipping/option/checkout_multiple')) {
+// 	Mage::log("Multishipping mode");
+// 	// Get list of orders
+// 	//$_orderIds = Mage::getSingleton('core/session')->getData('order_ids');
+// 	$_orderIds = $quote->getOrderIds();
+// 	// Get each order
+// 	foreach ($_orderIds as $orderId => $incrementId) {
+// 		// Get data about current order
+// 		$order = Mage::getModel('sales/order')->loadByIncrementId($incrementId);
+// 		$paymentMethodCode = $order->getPayment()->getMethodInstance()->getCode();
+// 		$orderDetails = $order->getData();
+// 		$couponCode = $orderDetails['coupon_code'];
+// 		$discount = 0;
+// 	}
+// }
+
+// Get cart
+$the_cart = array();
+
+foreach ($quote->getAllItems() as $order_item) {
+// Get item price including tax -- excluding free products
+	$price = $order_item->getPriceInclTax();
+	if ($price > 0) {
+		$item['price'] = $order_item->getPriceInclTax();
+		$item['quantity'] = $order_item->getQty();
+		$item['product_id'] = $order_item->getProduct()->getId();
+		$item['product_name'] = $order_item->getProduct()->getName();
+		$item['product_url'] = $order_item->getProduct()->getProductUrl();
+
+		// Increment total discount with this item
+		$discount += $order_item->getBaseDiscountAmount();
+
+		// Get item main category ID
+		$topCategory = Mage::getResourceModel('catalog/category_collection')
+		->addIdFilter($order_item->getProduct()->getCategoryIds())
+		->setOrder('level', 'ASC')
+		->setPage(1, 1)
+		->getFirstItem();
+		$topCategoryId = $topCategory->getId();
+		$item['category_id'] = $topCategoryId;
+
+		// get category list
+		$cats = $order_item->getProduct()->getCategoryCollection();
+		$temp=[];
+		foreach($cats as $cat) {
+			array_push($temp, $cat->getId());
+		}
+		$item['categories'] = implode(',', $temp);
+
+		// Get product ID
+		$model_product = Mage::getModel('catalog/product');
+		$_productObject = $model_product->load($order_item->getProduct()->getId());
+
+		// Get manufacturer ID
+		if ($_productObject->getAttributeText('manufacturer')) {
+			$item['manufacturer_id'] = $_productObject->getAttributeText('manufacturer');
+		} else {
+			$item['manufacturer_id'] = 1;
+		}
+
+		$item['reference'] = 'reference';
+
+		// Fill the cart with item
+		array_push($the_cart, $item);
+	}
+}
+
+// signature stuff
+$to_sign = trim((string)$orderId . (string)$customerId . $salt);
+$sig = md5($to_sign);
+//$session->clear();
+Mage::log("-------");
+?>
