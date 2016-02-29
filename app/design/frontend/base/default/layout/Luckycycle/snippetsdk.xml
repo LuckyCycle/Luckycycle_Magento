@@ -19,7 +19,7 @@
 			<block type="checkout/onepage_success" name="checkout.snippetsdk" template="Luckycycle/snippetsdk.phtml"/>
 		</reference> -->
 		<reference name="checkout.success">
-			<block type="checkout/onepage_success" name="checkout.snippetsdk" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="" />
+			<block type="checkout/onepage_success" name="checkout.snippetsdk" as="luckycycle_poke" template="Luckycycle/snippetsdk.phtml" output="toHtml" />
 		</reference>
 		<reference name="checkout.success.js">
 			<block type="page/html" name="luckycycle_js" as="luckycycle_js" template="Luckycycle/js.phtml" output="toHtml" />
