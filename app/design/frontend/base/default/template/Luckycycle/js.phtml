@@ -1,7 +1,7 @@
 <?php
 define('LC_VERSION',"3.0");
 require_once('prepare.phtml');
-
+//$discount = $order->getDiscountAmount();
 // this just embed a javascript object _lcdata into the footer and try to poke if configured and inject snippet of html/js
 // Get module settings from admin panel
 $enabledSnippet = Mage::getStoreConfig('snippetsdk/params/enabled');
@@ -17,6 +17,7 @@ if ($enabledSnippet) {
 			$req->setOperationId($operationKey);
 
 			// Prepare poke struct
+			Mage::log("Old discount:" . $discount);
 			$pokedata = array(
 				'user_uid' => (string)$customerId,
 				'item_uid' => (string)$orderId,
@@ -26,7 +27,7 @@ if ($enabledSnippet) {
 				'firstname' => (string)$firstName,
 				'lastname' => (string)$lastName,
 				'email' => (string)$emailCustomer,
-				'discount' => (string)$discount,
+				'discount' => (string)$the_discount,
 				'payment_method' => (string)$paymentMethodCode,
 				'shipping_value' => (string)$order->getShippingAmount(),
 				"order_date" => (string)$order->getCreatedAt(),
@@ -86,7 +87,7 @@ if ($enabledSnippet) {
 			"firstname":"<?php echo (string)$firstName ?>",
 			"lastname":"<?php echo (string)$lastName ?>",
 			"email":"<?php echo  (string)$emailCustomer ?>",
-			"discount":"<?php echo (string)$discount ?>",
+			"discount":"<?php echo (string)$the_discount ?>",
 			"payment_method":"<?php echo (string)$paymentMethodCode ?>",
 			"shipping_value":"<?php echo (string)$order->getShippingAmount() ?>",
 			"poke_software_version":"<?php echo "Magento ".(string)Mage::getVersion()." LC v".LC_VERSION ?>",
